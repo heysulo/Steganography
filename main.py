@@ -2,6 +2,7 @@ import argparse
 from time import gmtime, strftime
 import os.path
 import PIL.Image
+import sys
 
 def stamp(mode=0):
     # 0 = info
@@ -40,9 +41,12 @@ def main():
                     print stamp(2),"Image validation failed. The Image provided seems to be an invalid image"
                     print stamp(),"Exiting Program"
                     return
-                print stamp(),"Valid",img.format,"image detected"
-                print
-
+                print stamp(),"Valid",img.format,"image detected",img.size[0],"x",img.size[1]
+                print stamp(),"Embeding Message",
+                total_pixels = img.size[0]*img.size[1]*1.0
+                for x in range(img.size[0]):
+                    for y in range(img.size[1]):
+                        print img.getpixel((x,y))
 
             else:
                 print stamp(2),"The file", args.input, "was not found"
