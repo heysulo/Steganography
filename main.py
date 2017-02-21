@@ -1,7 +1,7 @@
 import argparse
 from time import gmtime, strftime
 import os.path
-
+import PIL.Image
 
 def stamp(mode=0):
     # 0 = info
@@ -32,12 +32,26 @@ def main():
             print stamp(),"Searching for the file",args.input
             if (os.path.isfile(args.input)):
                 print stamp(),"The file",args.input,"Found"
+                print stamp(),"Validating image"
+                img = None
+                try:
+                    img =PIL.Image.open(args.input)
+                except:
+                    print stamp(2),"Image validation failed. The Image provided seems to be an invalid image"
+                    print stamp(),"Exiting Program"
+                    return
+                print stamp(),"Valid",img.format,"image detected"
+                print
+
+
             else:
                 print stamp(2),"The file", args.input, "was not found"
                 print stamp(),"Exiting program"
+                return
         else:
             print stamp(2),"No input file is provided"
             print stamp(),"Exiting Program"
+            return
     elif args.decrypt:
         print stamp(), "Entering Steganography Decryption Mode"
     else:
