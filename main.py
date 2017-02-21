@@ -1,3 +1,9 @@
+"""
+Sulochana Kodituwakku
+University of Colombo School of Computing
+sulochana.456@live.com
+"""
+
 import argparse
 from time import gmtime, strftime
 import os.path
@@ -42,6 +48,10 @@ def encodepixel(pixel,txt):
     #print stamp(),pixel,"->",txt
     return (int(str(bin(pixel[0]))[2:-1]+txt[0],2),int(str(bin(pixel[1]))[2:-1]+txt[1],2),int(str(bin(pixel[2]))[2:-1]+txt[2],2))
 
+def decodepixel(pixel):
+    #print pixel
+    return str(bin(pixel[0])[-1])+str(bin(pixel[1])[-1])+str(bin(pixel[2])[-1])
+
 
 def main():
     print stamp(),"Initiating"
@@ -70,7 +80,7 @@ def main():
                 print stamp(),"Valid",img.format,"image detected",img.size[0],"x",img.size[1]
                 print stamp(),"Space available for you data : ",space, "Bytes/Characters"
                 print stamp(),"Enter Secret Message : ",
-                txt =texttobin(raw_input())
+                txt =texttobin(raw_input()[0:space])
                 print stamp(),"Embeding Message"
                 out = img
                 total_pixels = img.size[0]*img.size[1]*1.0
@@ -82,9 +92,19 @@ def main():
                             selection=txt[marker:marker+3]
                         marker+=3
                         out.putpixel((x,y),encodepixel(img.getpixel((x,y)),selection))
-                out.save("out.jpg")
-                print stamp(),"Message Embedding Success!"
+                        #out.putpixel((x,y),(255,255,255))
+                print stamp(), "Message Embedding Success!"
+                print stamp(), "Enter Output File Name : ",
+                filename = raw_input()
+                try:
+                    out.save(filename+".png",optimize=True,quality=100,mode="RGB")
+                except:
+                    print stamp(2),"Unable to write the output image to disk as",filename+".png"
+                    print stamp(), "Exiting Program"
+                    return
+                print stamp(),"Message Embedded Image Saved Successfully!"
                 print stamp(),"Exiting Program"
+                return
             else:
                 print stamp(2),"The file", args.input, "was not found"
                 print stamp(),"Exiting program"
@@ -110,18 +130,16 @@ def main():
                 space = img.size[1]*img.size[0]*3/8
                 print stamp(),"Valid",img.format,"image detected",img.size[0],"x",img.size[1]
                 print stamp(),"Reading Embeded Message"
-                out = img
+                txt = ""
                 total_pixels = img.size[0]*img.size[1]*1.0
-                marker = 0
                 for x in range(img.size[0]):
                     for y in range(img.size[1]):
-                        selection = "000"
-                        if marker<len(txt):
-                            selection=txt[marker:marker+3]
-                        marker+=3
-                        out.putpixel((x,y),encodepixel(img.getpixel((x,y)),selection))
-                out.save("out.jpg")
-                print stamp(),"Message Embedding Success!"
+                        #print txt
+                        txt+=decodepixel(img.getpixel((x,y)))
+                        #raw_input()
+                print stamp(),"Reading Embedded Message Success!"
+                print stamp(),"Embeded Message :"
+                print bintotext(txt)
                 print stamp(),"Exiting Program"
             else:
                 print stamp(2),"The file", args.input, "was not found"
