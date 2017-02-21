@@ -141,6 +141,7 @@ def main():
                 print stamp(),"Embeded Message :"
                 print bintotext(txt)
                 print stamp(),"Exiting Program"
+                return
             else:
                 print stamp(2),"The file", args.input, "was not found"
                 print stamp(),"Exiting program"
